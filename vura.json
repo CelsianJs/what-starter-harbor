@@ -1,0 +1,34 @@
+{
+  "headers": [
+    {
+      "source": "/",
+      "headers": {
+        "Cache-Control": "private, no-store"
+      }
+    },
+    {
+      "source": "/services",
+      "headers": {
+        "Cache-Control": "public, max-age=60, stale-while-revalidate=300"
+      }
+    },
+    {
+      "source": "/incidents/*",
+      "headers": {
+        "Cache-Control": "private, no-store"
+      }
+    },
+    {
+      "source": "/build",
+      "headers": {
+        "Cache-Control": "public, max-age=600"
+      }
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/404",
+      "destination": "/404.html"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "what-starter-harbor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Harbor is a What Framework operations-console starter for synthetic deploys, incidents, saved filters, activity logs, and shared state.",
+  "engines": {
+    "node": ">=20 <23"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build && node scripts/static-aliases.mjs",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run",
+    "test:browser": "playwright test",
+    "verify": "npm run test && npm run build && npm run test:browser",
+    "deploy:vura": "npm run build && vura-platform deploy",
+    "deploy:vura:prod": "npm run build && vura-platform deploy --prod"
+  },
+  "dependencies": {
+    "@celsian/vura-core": "0.8.3",
+    "what-framework": "0.13.10"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "vite": "6.4.3",
+    "vitest": "4.1.11",
+    "what-compiler": "0.13.10",
+    "vura-platform": "0.3.0"
+  }
+}
