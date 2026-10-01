@@ -7,7 +7,7 @@ Harbor is a compact operational SaaS reference for incident response, deploy rev
 - `src/routes.js` declares overview, incident list, incident detail, services, activity, build notes, and fallback routes.
 - `src/state/ops.js` owns filters, incident overrides, saved filter views, activity events, and save status.
 - `src/data/ops.js` provides the bundled services, incidents, deploys, teams, and activity log.
-- `scripts/build-vura.mjs` emits Vura static aliases for known routes and every bundled incident detail route.
+- `scripts/static-aliases.mjs` emits Vura static aliases for known routes and every bundled incident detail route.
 - `test/browser/harbor.spec.js` covers filters, saved views, detail edits, direct routes, storage failure, and mobile readability.
 
 ## State and rendering flow
@@ -90,6 +90,18 @@ Operational apps need deep links. The first route pass handled `/incidents`, but
 - unknown IDs should render a useful not-found panel instead of crashing on missing data.
 
 The browser suite now visits every bundled incident detail route and also checks an unknown route. That made routing regressions more useful than a single happy-path smoke test.
+
+## Real issue: Vura config shape and upload size
+
+Harbor is a pure Vite/What client app. It should upload like a static site, not like a server bundle.
+
+The first deploy attempt exposed three platform contract issues:
+
+- top-level `rewrites` is not part of the Vura config schema in `vura-platform/packages/shared/src/config/vura-config.ts`;
+- routing globs such as `*` are rejected by the shared matcher in `routing-rules.ts`, while `(.*)` is the supported catch-all form;
+- writing a manual `dist/manifest.json` for a static client app made the Vura CLI treat the build like a richer server/hot manifest, so `createDistArchive()` in the CLI included project context and dependencies.
+
+The fix was to remove the unsupported rewrite config, keep only valid header matchers, stop writing a manual manifest, and remove the unused `@celsian/vura-core` dependency/config from this static starter. Vura can synthesize a static manifest from the emitted HTML aliases and `404.html`. A local archive check now packs Harbor at about 22.1 KiB instead of the failed multi-megabyte upload path.
 
 ## Real issue: storage-denied edits
 

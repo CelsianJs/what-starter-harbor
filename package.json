@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Harbor is a What Framework operations-console starter for synthetic deploys, incidents, saved filters, activity logs, and shared state.",
   "engines": {
-    "node": ">=20 <23"
+    "node": ">=22 <23"
   },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
@@ -18,7 +18,6 @@
     "deploy:vura:prod": "npm run build && vura-platform deploy --prod"
   },
   "dependencies": {
-    "@celsian/vura-core": "0.8.3",
     "what-framework": "0.13.10"
   },
   "devDependencies": {

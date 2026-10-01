@@ -35,12 +35,4 @@ function writeRoute(path, title, description) {
 for (const route of routes) writeRoute(...route);
 writeRoute('/404', 'Page not found — Harbor', 'Harbor includes a genuine 404 artifact for static hosting.');
 copyFileSync(join('dist', '404', 'index.html'), join('dist', '404.html'));
-writeFileSync(join('dist', 'manifest.json'), `${JSON.stringify({
-  pages: routes.map(([path]) => ({
-    urlPattern: path,
-    mode: path === '/services' || path === '/build' ? 'static' : 'server',
-    config: path === '/services' ? { revalidate: 60, tags: ['harbor-services'] } : { cache: path === '/build' ? 'public' : 'private' },
-  })),
-  api: [],
-}, null, 2)}\n`);
 console.log(`static aliases OK: ${routes.length} routes plus 404`);

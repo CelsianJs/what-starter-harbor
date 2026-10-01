@@ -13,7 +13,7 @@
       }
     },
     {
-      "source": "/incidents/*",
+      "source": "/incidents/(.*)",
       "headers": {
         "Cache-Control": "private, no-store"
       }
@@ -23,12 +23,6 @@
       "headers": {
         "Cache-Control": "public, max-age=600"
       }
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/404",
-      "destination": "/404.html"
     }
   ]
 }

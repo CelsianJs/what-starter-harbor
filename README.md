@@ -64,6 +64,6 @@ Planned public repo: `CelsianJs/what-starter-harbor`.
 - `src/data/ops.js` — synthetic services, incidents, and deploys.
 - `src/routes.js` — explicit router table and fallback.
 - `src/pages/Build.jsx` — public implementation notes.
-- `scripts/static-aliases.mjs` — Vura-friendly route aliases, 404 artifact, and manifest.
+- `scripts/static-aliases.mjs` — Vura-friendly route aliases and a real `404.html` for static synthesis.
 
 See [BUILD.md](./BUILD.md) and `/build` for the full pattern guide.
