@@ -6,6 +6,7 @@ Harbor is a What Framework starter for a synthetic operations console. It shows 
 
 - Node.js 22.x
 - npm 10+ (bundled with current Node 22 releases)
+- After `npm ci`, install Playwright Chromium and WebKit for browser verification: `npx playwright install chromium webkit`
 - Vura Platform credentials for deployment
 
 ## Run it
@@ -32,6 +33,7 @@ npm run test:browser
 ```
 
 `npm run verify` runs all gates. Browser screenshots are written to `test-results/screenshots`.
+On minimal Linux CI images that do not already include browser system libraries, use `npx playwright install --with-deps chromium webkit` instead.
 
 ## Reset local state
 
