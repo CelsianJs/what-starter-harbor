@@ -67,3 +67,31 @@ export const owners = ['Mara', 'Theo', 'Inez', 'No owner'];
 export function serviceName(id) {
   return services.find((service) => service.id === id)?.name || id;
 }
+
+export function deployRiskTone(risk) {
+  if (risk >= 70) return 'risk-high';
+  if (risk >= 35) return 'risk-medium';
+  return 'risk-low';
+}
+
+export function riskMeterStyle(risk) {
+  const bounded = Math.max(0, Math.min(100, Math.round(Number(risk) || 0)));
+  return `--risk:${bounded}`;
+}
+
+export function serviceStatusTone(status) {
+  if (status === 'healthy') return 'tone-healthy';
+  if (status === 'watch') return 'tone-watch';
+  return 'tone-warning';
+}
+
+export function ownerLoadRows(rows) {
+  const load = {};
+  for (const incident of rows.filter((entry) => entry.status !== 'resolved')) {
+    load[incident.owner] = (load[incident.owner] || 0) + 1;
+  }
+  const max = Math.max(...Object.values(load), 1);
+  return Object.entries(load)
+    .map(([owner, count]) => ({ owner, count, share: count / max }))
+    .sort((a, b) => b.count - a.count || a.owner.localeCompare(b.owner));
+}

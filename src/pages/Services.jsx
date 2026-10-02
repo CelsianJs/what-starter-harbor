@@ -10,7 +10,7 @@ export default function Services() {
       </div>
       <div class="service-grid">
         {serviceRollups().map((service) => (
-          <article class={`service-card status-${service.status}`}>
+          <article class={`service-card status-${service.status} ${service.tone}`}>
             <p class="row-kicker">{service.region} · {service.tier}</p>
             <h2>{service.name}</h2>
             <p class="metric-line"><span>Status</span><strong>{service.status}</strong></p>

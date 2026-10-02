@@ -1,5 +1,5 @@
 import { computed, effect, signal } from 'what-framework';
-import { deploys, incidents, serviceName, services, severityOrder } from '../data/ops.js';
+import { deployRiskTone, deploys, incidents, ownerLoadRows, riskMeterStyle, serviceName, serviceStatusTone, services, severityOrder } from '../data/ops.js';
 
 export const STORAGE_KEY = 'what-starter-harbor-v1';
 
@@ -61,11 +61,7 @@ export const consoleSummary = computed(() => {
 });
 
 export const ownerLoad = computed(() => {
-  const load = {};
-  for (const incident of mergedIncidents().filter((entry) => entry.status !== 'resolved')) {
-    load[incident.owner] = (load[incident.owner] || 0) + 1;
-  }
-  return Object.entries(load).sort((a, b) => b[1] - a[1]);
+  return ownerLoadRows(mergedIncidents());
 });
 
 export const serviceRollups = computed(() => services.map((service) => {
@@ -74,6 +70,7 @@ export const serviceRollups = computed(() => services.map((service) => {
     ...service,
     incidents: serviceIncidents.length,
     worstSeverity: serviceIncidents[0]?.severity || 'none',
+    tone: serviceStatusTone(service.status)
   };
 }));
 
@@ -81,6 +78,8 @@ export const deployRollups = computed(() => deploys.map((deploy) => ({
   ...deploy,
   serviceName: serviceName(deploy.serviceId),
   linkedIncidents: mergedIncidents().filter((incident) => incident.serviceId === deploy.serviceId && incident.status !== 'resolved').length,
+  tone: deployRiskTone(deploy.risk),
+  meterStyle: riskMeterStyle(deploy.risk)
 })));
 
 function eventId() {

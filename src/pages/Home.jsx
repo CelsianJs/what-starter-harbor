@@ -30,15 +30,27 @@ export default function Home() {
         </section>
         <section class="panel">
           <h2>Owner load</h2>
-          {ownerLoad().map(([owner, count]) => <p class="metric-line"><span>{owner}</span><strong>{count}</strong></p>)}
+          {ownerLoad().map((row) => (
+            <p class="metric-line owner-meter" style={`--owner:${row.share * 100}%`}>
+              <span>{row.owner}</span>
+              <i></i>
+              <strong>{row.count}</strong>
+            </p>
+          ))}
         </section>
         <section class="panel">
           <h2>Services</h2>
-          {serviceRollups().slice(0, 3).map((service) => <p class="metric-line"><span>{service.name}</span><strong>{service.status}</strong></p>)}
+          {serviceRollups().slice(0, 3).map((service) => <p class={`metric-line status-metric ${service.tone}`}><span>{service.name}</span><strong>{service.status}</strong></p>)}
         </section>
         <section class="panel">
           <h2>Deploy watch</h2>
-          {deployRollups().slice(0, 3).map((deploy) => <p class="metric-line"><span>{deploy.id}</span><strong>{deploy.risk}</strong></p>)}
+          {deployRollups().slice(0, 3).map((deploy) => (
+            <p class={`metric-line risk-line ${deploy.tone}`} style={deploy.meterStyle}>
+              <span>{deploy.id}</span>
+              <i></i>
+              <strong>{deploy.risk}</strong>
+            </p>
+          ))}
         </section>
       </div>
     </section>

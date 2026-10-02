@@ -105,10 +105,11 @@ button:focus-visible, a:focus-visible, select:focus-visible {
 .status-strip {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.7rem;
+  gap: 0.5rem;
   color: var(--muted);
   border-bottom: 1px solid var(--line);
-  padding: 0.75rem 0;
+  padding: 0.55rem 0;
+  font-size: 0.88rem;
 }
 .status-strip strong { color: var(--text); }
 .status-strip span:not(:last-child)::after { content: "/"; color: var(--line); margin-left: 0.7rem; }
@@ -139,10 +140,12 @@ p { line-height: 1.55; }
 .hero-panel {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(240px, 360px);
-  gap: 1.5rem;
+  gap: 1.1rem;
   align-items: center;
   margin-bottom: 1rem;
+  padding-block: clamp(1rem, 2vw, 1.25rem);
 }
+.hero-panel h1 { font-size: clamp(2.4rem, 5vw, 4rem); max-width: 760px; }
 .hero-panel p { color: var(--muted); max-width: 70ch; }
 .actions { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1rem; }
 .radar {
@@ -192,7 +195,7 @@ label span {
   font-size: 2rem;
 }
 .dashboard-grid { grid-template-columns: 1.2fr 0.8fr; }
-.wide { grid-row: span 3; }
+.wide { align-self: start; }
 .panel-head,
 .split,
 .metric-line {
@@ -261,6 +264,10 @@ select {
   margin: 1rem 0;
   border-bottom: 1px solid var(--line);
 }
+.incident-detail[class*="severity-"] {
+  padding-left: 1.25rem;
+}
+.incident-detail h1 { font-size: clamp(2rem, 4vw, 3.5rem); max-width: 980px; }
 .incident-detail header p { color: var(--muted); }
 .incident-detail label { display: block; margin-bottom: 1rem; }
 .quick-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
@@ -277,6 +284,50 @@ select {
   align-items: center;
 }
 meter { width: 100%; accent-color: var(--cyan); }
+.status-metric strong { text-transform: uppercase; letter-spacing: .08em; font-size: .82rem; }
+.tone-healthy strong,
+.tone-healthy.pill { color: var(--green); }
+.tone-watch strong,
+.tone-watch.pill { color: var(--cyan); }
+.tone-warning strong,
+.tone-warning.pill { color: var(--amber); }
+.owner-meter,
+.risk-line {
+  display: grid;
+  grid-template-columns: minmax(7rem, 1fr) minmax(72px, .8fr) auto;
+}
+.owner-meter i,
+.risk-line i,
+.risk-meter i {
+  display: block;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: rgba(59, 231, 255, 0.12);
+  overflow: hidden;
+}
+.owner-meter i::before,
+.risk-line i::before,
+.risk-meter i::before {
+  content: "";
+  display: block;
+  width: var(--owner, calc(var(--risk, 0) * 1%));
+  height: 100%;
+  border-radius: inherit;
+  background: var(--cyan);
+}
+.risk-line.risk-high i::before,
+.risk-meter.risk-high i::before { background: var(--red); }
+.risk-line.risk-medium i::before,
+.risk-meter.risk-medium i::before { background: var(--amber); }
+.risk-line.risk-low i::before,
+.risk-meter.risk-low i::before { background: var(--green); }
+.risk-meter {
+  display: grid;
+  grid-template-columns: minmax(96px, 1fr) 2.4rem;
+  align-items: center;
+  gap: 0.55rem;
+}
+.risk-meter b { text-align: right; }
 .activity-event {
   display: grid;
   grid-template-columns: 5rem 1fr;
@@ -319,6 +370,8 @@ code {
   .activity-event {
     grid-template-columns: 1fr;
   }
+  .hero-panel h1 { font-size: clamp(2.25rem, 12vw, 3.4rem); }
+  .incident-detail[class*="severity-"] { padding-left: 1rem; }
 }
 
 @media (max-width: 520px) {

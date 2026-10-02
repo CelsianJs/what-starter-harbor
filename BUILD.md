@@ -115,6 +115,22 @@ The fix was to make persistence a boundary, not a dependency. Harbor can still f
 - Keeping edits as `incidentOverrides` avoided mutating bundled data and made reset/debug behavior clear.
 - Static route aliases kept the hosted Vura demo fast while preserving routeable incident detail URLs.
 
+## Iteration note: make rollups visual and compact
+
+The first overview repeated the same open/critical/degraded numbers in both the status strip and KPI grid, while deploy risks were plain integers. The shell now keeps the strip for storage/demo state only, and the dashboard owns operational metrics.
+
+Fixture helpers in `src/data/ops.js` turn raw values into view metadata:
+
+```js
+export function deployRiskTone(risk) {
+  if (risk >= 70) return 'risk-high';
+  if (risk >= 35) return 'risk-medium';
+  return 'risk-low';
+}
+```
+
+`ownerLoadRows()` computes owner bars from current incidents, `serviceStatusTone()` maps health labels to status color, and `riskMeterStyle()` keeps deploy risk in the 0-100 meter range. The detail route also caps incident titles and pads the severity rail so status color supports the content instead of colliding with it.
+
 ## Demo boundaries
 
 Harbor does not watch live systems, poll metrics, or send alerts. Treat it as a UI and state-management starter. Replace `src/data/ops.js` and the local persistence layer when connecting a real backend.

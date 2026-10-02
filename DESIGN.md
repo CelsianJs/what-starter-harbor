@@ -2,7 +2,7 @@
 
 ## Source of truth
 - Status: Active
-- Last refreshed: 2026-10-01
+- Last refreshed: 2026-10-02
 - Primary product surfaces: overview, incident queue, incident detail, services, deploy ledger, activity log, build notes
 - Evidence reviewed: What Framework routing/state examples, current getting-started guidance, and the Vura deploy script pattern used by these starters
 
@@ -34,14 +34,14 @@
 ## Visual language
 - Color: oxidized slate, cold cyan, amber warning, red critical, steel borders
 - Typography: compact system sans with tabular numeric labels; no external fonts
-- Spacing/layout rhythm: dense but breathable console grid; panels align to a strict 12px rhythm
+- Spacing/layout rhythm: dense but breathable console grid; compact ops hero; panels align to a strict 12px rhythm
 - Shape/radius/elevation: clipped corners, fine borders, luminous but restrained focus
 - Motion: short panel fades and route slides; disabled under reduced motion
 - Imagery/iconography: CSS status bars, grid lines, deploy pulses; no stock art
 
 ## Components
 - Existing components to reuse: none; standalone starter
-- New/changed components: app shell, KPI tile, incident row, incident detail rail, service tile, deploy row, activity event
+- New/changed components: app shell, KPI tile, incident row, padded incident detail rail, service tile, deploy risk meter, owner load meter, activity event
 - Variants and states: empty filters, active saved filters, status/severity changes, 404, mobile stacked console
 - Token/component ownership: `src/styles.css` owns all visual tokens
 
@@ -79,3 +79,8 @@
 
 ## Open questions
 - [ ] Choose the final Vura subdomain during deployment.
+
+## Visual QA audit
+- External reference: independent visual review plus local screenshots rather than a pixel target.
+- Current judgment: Harbor remains a dense nocturnal operations console. The overview no longer duplicates KPI values in the status strip, the hero is compact enough for the active queue to lead, owner/service/deploy rollups use fixture-driven meters and tones, and the incident detail severity rail now has enough padding around the back link, title and summary.
+- Follow-up after deployment: capture desktop/mobile/detail screenshots from the live Vura URL and verify the console density survives production fonts and route aliases.

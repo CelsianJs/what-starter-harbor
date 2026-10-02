@@ -23,10 +23,8 @@ export default function AppShell({ children }) {
           {nav.map(([href, label]) => <Link href={href} activeClass="active" exactActiveClass="active">{label}</Link>)}
         </nav>
       </header>
-      <section class="status-strip" aria-label="Console summary">
-        <span><strong>{consoleSummary().open}</strong> open</span>
-        <span><strong>{consoleSummary().critical}</strong> critical</span>
-        <span><strong>{consoleSummary().degradedServices}</strong> degraded services</span>
+      <section class="status-strip" aria-label="Console storage state">
+        <span>Synthetic fixtures only</span>
         <span><strong>{savedFilters().length}</strong> saved filters</span>
         <span>{saveState()}</span>
       </section>

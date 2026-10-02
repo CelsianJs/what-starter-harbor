@@ -16,7 +16,7 @@ export default function Deploys() {
             <span>{deploy.actor}</span>
             <span>{deploy.age}</span>
             <span>{deploy.linkedIncidents} linked</span>
-            <meter min="0" max="100" value={deploy.risk}>{deploy.risk}</meter>
+            <span class={`risk-meter ${deploy.tone}`} style={deploy.meterStyle}><i></i><b>{deploy.risk}</b></span>
           </article>
         ))}
       </div>

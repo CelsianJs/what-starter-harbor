@@ -31,6 +31,7 @@ export default function Build() {
         <h2>Problem → fix → proof</h2>
         <p><strong>Upload size:</strong> a manual manifest made the static app look like a server bundle. Removing it keeps Harbor on Vura's static archive path, about 22.1 KiB in the local pack check.</p>
         <p><strong>Schema:</strong> Vura's shared parser rejects unknown top-level keys and star globs, so the shipped config uses only supported fields and matcher syntax.</p>
+        <p><strong>Design review:</strong> the overview used to duplicate KPI values and show deploy risks as bare numbers. The current pass keeps storage state in the top strip, renders owner/service/deploy rollups with fixture-driven bars and tones, and pads the incident detail severity rail so it reads like an ops console instead of a stretched template.</p>
       </section>
     </article>
   );
