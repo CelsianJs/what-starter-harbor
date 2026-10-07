@@ -3,6 +3,12 @@ export default function Build() {
     <article class="build-notes page-enter">
       <p class="system-label">Agent reference</p>
       <h1>How Harbor is built.</h1>
+      <section>
+        <h2>Reactive incident detail</h2>
+        <p>Components run once, so a captured record does not follow signal updates. Capture the route ID, read the merged record through an accessor, and bind selects/classes to that accessor. Browser regressions require the displayed quick-action result to match persisted state.</p>
+        <pre>{"const incidentId = route.params.id;\nconst incident = () => mergedIncidents().find((entry) => entry.id === incidentId);"}</pre>
+        <p>Saved views restored from localStorage are not trusted objects. Restoration keeps at most five valid unique IDs/filter combinations, ignores null or malformed entries, and regenerates labels from recognized severity/status/owner values. Valid legacy IDs survive; applying or naming a view validates its shape again. Browser tests mix malformed entries with a valid legacy view and require a usable queue with no runtime errors.</p>
+      </section>
       <section class="panel">
         <h2>Signals</h2>
         <p><code>src/state/ops.js</code> stores filters, saved views, incident overrides, activity events, and save state as What signals.</p>

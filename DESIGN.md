@@ -2,7 +2,7 @@
 
 ## Source of truth
 - Status: Active
-- Last refreshed: 2026-10-02
+- Last refreshed: 2026-10-07
 - Primary product surfaces: overview, incident queue, incident detail, services, deploy ledger, activity log, build notes
 - Evidence reviewed: What Framework routing/state examples, current getting-started guidance, and the Vura deploy script pattern used by these starters
 
@@ -77,7 +77,16 @@
 - Compatibility constraints: modern browsers supported by Vite output and What router
 - Test/screenshot expectations: Vitest reducer/filter tests plus Playwright desktop/mobile flows and screenshots
 
+## Operational refinement
+
+Persistence is an untrusted boundary. Saved filters restored from the browser must have valid bounded IDs and known filter values; malformed entries are ignored rather than becoming visible buttons. Valid legacy IDs and behavior are preserved with regenerated meaningful labels.
+
+Incident detail captures its route ID once, then reads the current merged record through an accessor. Quick actions now update the visible selects and severity rail; actions already applied are disabled. Saved views use their severity/status/owner combination as the visible name, including legacy saved views, and saving the same combination updates one view rather than duplicating it. Mobile hides the decorative radar and keeps health tiles two-up so operational state appears sooner.
+
+Validation contract: The browser suite checks resolved status, Theo ownership, live severity tone, duplicate view saves, distinct labels, route transitions, and denied storage.
+
 ## Open questions
+
 - [ ] Choose the final Vura subdomain during deployment.
 
 ## Visual QA audit

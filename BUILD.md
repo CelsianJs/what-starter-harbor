@@ -1,5 +1,23 @@
 # Build notes for agents
 
+## Reactive detail and recognizable views
+
+Restored saved views are validated before entering signals: only bounded nonempty IDs and recognized severity/status/owner combinations are retained, with at most five unique IDs/views. Null entries, array-shaped filters and unknown values are discarded. Valid legacy IDs survive, while names are derived again from their actual filters. `applySavedFilter()` and `savedFilterLabel()` validate defensively too, so malformed state cannot enter the queue through an action or label.
+
+Incident detail captures its route ID once, then reads the current merged record through an accessor. Quick actions now update the visible selects and severity rail; actions already applied are disabled. Saved views use their severity/status/owner combination as the visible name, including legacy saved views, and saving the same combination updates one view rather than duplicating it. Mobile hides the decorative radar and keeps health tiles two-up so operational state appears sooner.
+
+The relevant source pattern is:
+
+```js
+const incidentId = route.params.id;
+const incident = () => mergedIncidents().find((entry) => entry.id === incidentId);
+```
+
+The browser suite checks resolved status, Theo ownership, live severity tone, duplicate view saves, distinct labels, route transitions, and denied storage.
+
+Keep the product anonymous and local/synthetic. These workflow improvements do not add authentication, collaboration, payments, ingestion, or durable server storage.
+
+
 Harbor is a compact operational SaaS reference for incident response, deploy review, and team handoff flows. It has no live monitoring backend. Every metric, incident, deploy, and activity item is synthetic local data so the starter can focus on What Framework state, routing, persistence, and static deployment patterns.
 
 ## Source map

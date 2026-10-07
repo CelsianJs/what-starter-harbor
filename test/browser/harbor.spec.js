@@ -25,7 +25,7 @@ test('filters, saves a view, mutates incident detail, logs activity, and screens
   await page.getByLabel('Severity').selectOption('critical');
   await expect(page.getByText('inc-1048')).toBeVisible();
   await page.getByRole('button', { name: /save current filter/i }).click();
-  await expect(page.getByRole('button', { name: 'Console watch' })).toBeVisible();
+  await expect(page.getByRole('button', { name: /critical.*open.*all owners/i })).toBeVisible();
 
   await page.getByRole('link', { name: /synthetic cold-start/i }).click();
   await page.getByRole('button', { name: 'Mark resolved' }).click();
@@ -42,9 +42,49 @@ test('filters, saves a view, mutates incident detail, logs activity, and screens
   await page.screenshot({ path: `test-results/screenshots/harbor-${testInfo.project.name}.png`, fullPage: false });
 });
 
+test('quick actions display the state that is saved and saved views have distinct identities', async ({ page }) => {
+  await page.goto('/incidents/inc-1048');
+  await page.getByRole('button', { name: 'Mark resolved' }).click();
+  await expect(page.getByLabel('Status')).toHaveValue('resolved');
+  await page.getByRole('button', { name: 'Assign Theo' }).click();
+  await expect(page.getByLabel('Owner')).toHaveValue('Theo');
+  await page.getByLabel('Severity').selectOption('minor');
+  await expect(page.locator('.incident-detail')).toHaveClass(/severity-minor/);
+  await page.getByRole('link', { name: 'Back to queue' }).click();
+  await expect(page.locator('.filter-bar')).toBeVisible();
+  await page.locator('.filter-bar').getByLabel('Severity').selectOption('major');
+  await page.getByRole('button', { name: 'Save current filter' }).click();
+  await page.getByRole('button', { name: 'Save current filter' }).click();
+  await expect(page.locator('.saved-filters button')).toHaveCount(1);
+  await page.locator('.filter-bar').getByLabel('Severity').selectOption('minor');
+  await page.getByRole('button', { name: 'Save current filter' }).click();
+  await expect(page.locator('.saved-filters button')).toHaveCount(2);
+  await expect(page.locator('.saved-filters')).toContainText('major');
+  await expect(page.locator('.saved-filters')).toContainText('minor');
+});
+
 test('unknown route renders fallback', async ({ page }) => {
   await page.goto('/nowhere');
   await expect(page.getByRole('heading', { name: /no console route/i })).toBeVisible();
+});
+
+test('legacy saved view labels remain truthful and repeated saves keep one identity', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('what-starter-harbor-v1', JSON.stringify({ overrides: {}, filters: { severity: 'major', status: 'open', owner: 'Theo' }, saved: [{ id: 'legacy', name: 'Console watch', filters: { severity: 'major', status: 'open', owner: 'Theo' } }], log: [] })));
+  await page.goto('/incidents');
+  await expect(page.getByRole('button', { name: 'major · open · Theo', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Save current filter' }).click();
+  await expect(page.locator('.saved-filters button')).toHaveCount(1);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('what-starter-harbor-v1')).saved[0].id)).toBe('legacy');
+});
+
+test('malformed restored saved filters are ignored without breaking valid legacy views', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('what-starter-harbor-v1', JSON.stringify({ overrides: {}, filters: null, saved: [null, {}, { id: 'null-view', filters: null }, { id: 'array-view', filters: [] }, { id: 'unknown-view', filters: { severity: 'impossible', owner: 'Theo', status: 'open' } }, { id: 'legacy', name: 'Console watch', filters: { severity: 'major', status: 'open', owner: 'Theo' } }], log: [] })));
+  await page.goto('/incidents');
+  await expect(page.locator('.saved-filters button')).toHaveCount(1);
+  await page.getByRole('button', { name: 'major · open · Theo', exact: true }).click();
+  await expect(page.getByLabel('Severity')).toHaveValue('major');
+  await expect(page.getByLabel('Owner')).toHaveValue('Theo');
+  await expect(page.getByLabel('Status')).toHaveValue('open');
 });
 
 test('every incident detail route is directly addressable', async ({ page }) => {

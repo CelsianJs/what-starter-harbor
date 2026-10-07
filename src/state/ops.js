@@ -1,5 +1,5 @@
 import { computed, effect, signal } from 'what-framework';
-import { deployRiskTone, deploys, incidents, ownerLoadRows, riskMeterStyle, serviceName, serviceStatusTone, services, severityOrder } from '../data/ops.js';
+import { deployRiskTone, deploys, incidents, ownerLoadRows, owners, riskMeterStyle, serviceName, serviceStatusTone, services, severityOrder, statusOptions } from '../data/ops.js';
 
 export const STORAGE_KEY = 'what-starter-harbor-v1';
 
@@ -10,6 +10,29 @@ function initialLog() {
   ];
 }
 
+function normalizeFilters(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  if (!['all', ...severityOrder].includes(value.severity)
+    || !['all', 'open', ...statusOptions].includes(value.status)
+    || !['all', ...owners].includes(value.owner)) return null;
+  return { severity: value.severity, status: value.status, owner: value.owner };
+}
+
+function restoredSavedFilters(value) {
+  if (!Array.isArray(value)) return [];
+  const seenIds = new Set();
+  const seenViews = new Set();
+  return value.slice(0, 50).flatMap((item) => {
+    const view = normalizeFilters(item?.filters);
+    if (!view || typeof item?.id !== 'string' || !item.id.trim() || item.id.length > 80) return [];
+    const signature = JSON.stringify(view);
+    if (seenIds.has(item.id) || seenViews.has(signature)) return [];
+    seenIds.add(item.id);
+    seenViews.add(signature);
+    return [{ id: item.id, name: savedFilterLabel(view), filters: view }];
+  }).slice(0, 5);
+}
+
 function safeLoad() {
   if (typeof localStorage === 'undefined') return { overrides: {}, filters: { severity: 'all', status: 'open', owner: 'all' }, saved: [], log: initialLog() };
   try {
@@ -17,8 +40,8 @@ function safeLoad() {
     if (!parsed || typeof parsed !== 'object') throw new Error('bad state');
     return {
       overrides: parsed.overrides && typeof parsed.overrides === 'object' ? parsed.overrides : {},
-      filters: parsed.filters || { severity: 'all', status: 'open', owner: 'all' },
-      saved: Array.isArray(parsed.saved) ? parsed.saved : [],
+      filters: normalizeFilters(parsed.filters) || { severity: 'all', status: 'open', owner: 'all' },
+      saved: restoredSavedFilters(parsed.saved),
       log: Array.isArray(parsed.log) ? parsed.log : initialLog(),
     };
   } catch {
@@ -94,22 +117,34 @@ export function setFilter(key, value) {
   filters((current) => ({ ...current, [key]: value }));
 }
 
-export function saveCurrentFilter(name = 'Saved view') {
-  const label = name.trim() || 'Saved view';
-  savedFilters((items) => [{ id: eventId(), name: label, filters: filters() }, ...items.slice(0, 4)]);
+export function savedFilterLabel(view = {}) {
+  const current = normalizeFilters(view);
+  if (!current) return 'Invalid saved view';
+  return `${current.severity === 'all' ? 'All severities' : current.severity} · ${current.status} · ${current.owner === 'all' ? 'All owners' : current.owner}`;
+}
+
+export function saveCurrentFilter() {
+  const current = normalizeFilters(filters());
+  if (!current) return;
+  const label = savedFilterLabel(current);
+  const sameView = (item) => ['severity', 'status', 'owner'].every((key) => item?.filters?.[key] === current[key]);
+  const existing = savedFilters().find(sameView);
+  savedFilters((items) => [{ id: existing?.id || eventId(), name: label, filters: current }, ...items.filter((item) => !sameView(item)).slice(0, 4)]);
   addActivity(`Saved filter “${label}”.`, 'filter');
 }
 
 export function applySavedFilter(id) {
-  const item = savedFilters().find((entry) => entry.id === id);
-  if (!item) return;
-  filters(item.filters);
-  addActivity(`Applied saved filter “${item.name}”.`, 'filter');
+  const item = savedFilters().find((entry) => entry?.id === id);
+  const view = normalizeFilters(item?.filters);
+  if (!view) return;
+  filters(view);
+  addActivity(`Applied saved filter “${savedFilterLabel(view)}”.`, 'filter');
 }
 
 export function updateIncident(id, patch) {
   const incident = mergedIncidents().find((entry) => entry.id === id);
   if (!incident) return;
+  if (Object.entries(patch).every(([key, value]) => incident[key] === value)) return;
   incidentOverrides((overrides) => ({ ...overrides, [id]: { ...(overrides[id] || {}), ...patch } }));
   const changed = Object.entries(patch).map(([key, value]) => `${key} → ${value}`).join(', ');
   addActivity(`${id}: ${changed}.`, patch.status === 'resolved' ? 'success' : 'workflow');
