@@ -2,7 +2,7 @@
 
 ## Source of truth
 - Status: Active
-- Last refreshed: 2026-10-07
+- Last refreshed: 2026-10-08
 - Primary product surfaces: overview, incident queue, incident detail, services, deploy ledger, activity log, build notes
 - Evidence reviewed: What Framework routing/state examples, current getting-started guidance, and the Vura deploy script pattern used by these starters
 
@@ -33,11 +33,11 @@
 
 ## Visual language
 - Color: oxidized slate, cold cyan, amber warning, red critical, steel borders
-- Typography: compact system sans with tabular numeric labels; no external fonts
-- Spacing/layout rhythm: dense but breathable console grid; compact ops hero; panels align to a strict 12px rhythm
-- Shape/radius/elevation: clipped corners, fine borders, luminous but restrained focus
+- Typography: Avenir Next/Segoe UI sans with tabular numerals;16px body, 14px labels and controls; no external fonts
+- Spacing/layout rhythm: dense but breathable console grid;32px page heading,24px sections and8px spacing rhythm
+- Shape/radius/elevation: 8px controls, 12px panels, subtle borders and visible keyboard focus
 - Motion: short panel fades and route slides; disabled under reduced motion
-- Imagery/iconography: CSS status bars, grid lines, deploy pulses; no stock art
+- Imagery/iconography: fixture-driven status/risk/owner bars and a small quiet radar; no decorative canvas grid or stock art
 
 ## Components
 - Existing components to reuse: none; standalone starter
@@ -93,3 +93,8 @@ Validation contract: The browser suite checks resolved status, Theo ownership, l
 - External reference: independent visual review plus local screenshots rather than a pixel target.
 - Current judgment: Harbor remains a dense nocturnal operations console. The overview no longer duplicates KPI values in the status strip, the hero is compact enough for the active queue to lead, owner/service/deploy rollups use fixture-driven meters and tones, and the incident detail severity rail now has enough padding around the back link, title and summary.
 - Follow-up after deployment: capture desktop/mobile/detail screenshots from the live Vura URL and verify the console density survives production fonts and route aliases.
+
+
+## Modern interface consistency
+
+The primary workspace, detail views and build guide share a bounded sans-serif hierarchy, natural-case 14px chrome, 44px targets and quiet surfaces. Do not reintroduce poster headings, decorative background grids, heavy shadows or pill-shaped navigation. Brand accents and functional visualizations remain distinct; operational information takes precedence over decoration.

@@ -165,3 +165,10 @@ npm run test:browser
 ```
 
 The browser suite verifies filters, saved filters, every direct incident route, detail mutations, activity logging, storage-denied fallback, 404 behavior, focusability, and mobile rendering.
+
+
+## Modern interface baseline
+
+Keep the app and its detail/build routes in one type system: Avenir Next, Segoe UI Variable, Segoe UI, sans-serif; 16px body with 1.6 line height, 14px labels and controls, 32px page headings and 24px subsections. Use 44px control targets, 8px spacing increments, quiet backgrounds, subtle borders and visible focus. Preserve data-driven chart geometry, row identity, route semantics and local persistence when changing styles.
+
+Run `npm run test:style` after installing dependencies and Playwright Chromium. It builds the starter, starts its own production preview on an ephemeral local port, checks preview health, runs the desktop/mobile geometry and focus regressions, and cleans up its processes. No manually running server is required. CI runs this command after the existing unit/build/smoke/browser checks. The check covers overflow, control type and target size, home-wordmark navigation, detail/build headings and keyboard focus.

@@ -12,6 +12,7 @@
     "build": "vite build && node scripts/static-aliases.mjs",
     "preview": "vite preview --host 127.0.0.1",
     "test": "vitest run",
+    "test:style": "npm run build && node scripts/run-style-checks.mjs",
     "test:browser": "playwright test",
     "verify": "npm run test && npm run build && npm run test:browser",
     "deploy:vura": "npm run build && vura-platform deploy",
